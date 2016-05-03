@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS = -g -std=c++11 -Wall -pedantic -DNDEBUG -Werror -Wextra
+CXXFLAGS = -g -std=c++11 -Wall -pedantic -Werror -Wextra
 BIN=networkflow.x
 
 SRC=$(wildcard *.cpp)
