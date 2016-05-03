@@ -1,3 +1,9 @@
+// Author: Connor Cowad
+// Date: 5/3/16
+// Class: Algorithms I
+// Instructor: Chaman Sabharwal
+// TA: Ayusha Mathur
+
 #ifndef CODETIMER_H
 #define CODETIMER_H
 

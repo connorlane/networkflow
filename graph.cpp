@@ -1,3 +1,9 @@
+// Author: Connor Cowad
+// Date: 5/3/16
+// Class: Algorithms I
+// Instructor: Chaman Sabharwal
+// TA: Ayusha Mathur
+
 #include "graph.h"
 
 Graph::Graph(const std::vector< std::vector<int> >& nodemap, std::vector<int> source, std::vector<int> sink) {

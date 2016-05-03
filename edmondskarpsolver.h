@@ -1,8 +1,13 @@
+// Author: Connor Cowad
+// Date: 5/3/16
+// Class: Algorithms I
+// Instructor: Chaman Sabharwal
+// TA: Ayusha Mathur
+
 #ifndef EDMONDSKARPSOLVER_H
 #define EDMONDSKARPSOLVER_H
 
 #include "fordfulkersonsolver.h"
-#include <queue>
 
 class EdmondsKarpSolver : public FordFulkersonSolver {
 private:

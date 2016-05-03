@@ -1,4 +1,12 @@
+// Author: Connor Cowad
+// Date: 5/3/16
+// Class: Algorithms I
+// Instructor: Chaman Sabharwal
+// TA: Ayusha Mathur
+
 #include "edmondskarpsolver.h"
+#include <queue>
+#include <cassert>
 
 std::vector<int> EdmondsKarpSolver::findPath(const Graph& g) {
 	std::vector<int> parent(g.size());
@@ -22,6 +30,13 @@ std::vector<int> EdmondsKarpSolver::findPath(const Graph& g) {
 		}
 	}	
 
-	return (visited[g.sink()] == true) ? parent : std::vector<int>();
+	if (visited[g.sink()]) {
+		assert(isPath(g, parent));
+		return parent;
+	}
+	else {
+		// Return empty vector (no path found)
+		return std::vector<int>();
+	}
 }
 
