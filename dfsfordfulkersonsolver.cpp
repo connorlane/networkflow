@@ -20,6 +20,7 @@ bool DfsFordFulkersonSolver::_findPath(const Graph& g, std::vector<bool>& visite
 	if (node == g.sink())
 		return true;
 
+	// Recursive depth-first search for a path from <node> to g.sink()
 	for (unsigned int link = 0; link < g.size(); link++) {
 		if (visited[link] == false && g[node][link] > 0) {
 			visited[link] = true;

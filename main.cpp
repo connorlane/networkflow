@@ -18,11 +18,11 @@
 
 int main() {
 	// Test parameters
-	const int numberOfNodes = 10;
+	const int numberOfNodes = 500;
 	const int maxFlowPerLink = 9;
 	const int sparseness = 50; // Out of 100
-	const int numSource = 2;
-	const int numSink = 6;
+	const int numSource = numberOfNodes * 0.2;
+	const int numSink = numberOfNodes * 0.2;
 
 	// Create a node map to store the links
 	std::vector< std::vector<int> > nodemap(numberOfNodes, std::vector<int>(numberOfNodes));
@@ -34,7 +34,7 @@ int main() {
 	for (auto& node: nodemap) {
 		for (auto& link: node) {
 			// Used to generate sparse graphs or dense graphs
-			if ( (rand() % 100) < sparseness) 
+			if ( (rand() % 100) > sparseness) 
 				// No link
 				link = 0;
 			else
@@ -67,7 +67,7 @@ int main() {
 	Graph g (nodemap, source, sink);
 
 	// Uncomment to view input graph map
-	//std::cout << "Graph: " << std::endl << g << std::endl;
+	std::cout << "Graph: " << std::endl << g << std::endl;
 
 	// Create the solvers & timer
 	DfsFordFulkersonSolver ffs;

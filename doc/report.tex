@@ -1,0 +1,303 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Template: Project Titlepage Modified (v 0.1) by rcx
+%
+% Original Source: http://www.howtotex.com
+% Date: February 2014
+% 
+% This is a title page template which be used for articles & reports.
+% 
+% This is the modified version of the original Latex template from
+% aforementioned website.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{report}
+\usepackage[a4paper]{geometry}
+\usepackage[myheadings]{fullpage}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{graphicx, wrapfig, subcaption, setspace, booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[font=small, labelfont=bf]{caption}
+\usepackage{fourier}
+\usepackage[protrusion=true, expansion=true]{microtype}
+\usepackage[english]{babel}
+\usepackage{sectsty}
+\usepackage{url, lipsum}
+
+\usepackage{listings}
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+\doublespacing
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+
+%-------------------------------------------------------------------------------
+% HEADER & FOOTER
+%-------------------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\setlength\headheight{15pt}
+\fancyhead[L]{Connor Coward}
+\fancyhead[R]{Missouri University of Science \& Technology}
+\fancyfoot[R]{Page \thepage\ of \pageref{LastPage}}
+%-------------------------------------------------------------------------------
+% TITLE PAGE
+%-------------------------------------------------------------------------------
+
+\begin{document}
+
+\title{ \normalsize \textsc{Course: CS2500 - Algorithms I} \\
+		\textsc{Instructor: Dr. Chaman Lal Sabharwal}
+		\\ [2.0cm]
+		\HRule{0.5pt} \\
+		\LARGE \textbf{\uppercase{Max Flow Problem: \\ Ford-Fulkerson vs Edmonds-Karp}}
+		\HRule{0.5pt} \\ [0.5cm]
+		\normalsize \today \vspace*{4\baselineskip}}
+
+\date{5/3/2016}
+
+\author{
+		Connor Coward \\ 
+		Missouri University of Science and Technology  }
+
+\maketitle
+\tableofcontents
+\newpage
+
+%-------------------------------------------------------------------------------
+% Section title formatting
+\sectionfont{\scshape}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+% BODY
+%-------------------------------------------------------------------------------
+
+\section*{Motivation}
+\addcontentsline{toc}{section}{Motivation}
+Moore's law states that computing power will double roughly every two years. For decades, this held true; however, in recent years, Moore's law has slowed as hardware manufacturers struggle to continue to shrink die size. Increasingly, the focus has turned to improving software algorithm efficiency over hardware in order to keep up with demand. Software users want the capability of processing more and more data in less and less time. 
+
+One well-known problem in computer science is the max flow problem for networks and graphs. This problem has far-reaching applications in areas such as electrical network analysis, routing raw goods to manufacturing facilities, improving network performance, and much more. A better understanding of the advantages and disadvantages of different solutions to the max flow problem can lead to significant improvements in these areas. This report analyses various common solutions to the max flow problem in order to better understand the advantages and disadvantages of the solutions.
+
+\section*{Literature Review}
+\addcontentsline{toc}{section}{Literature Review}
+
+\subsection*{Problem Description}
+\addcontentsline{toc}{subsection}{Problem Description}
+Given a directed, weighted network with one or more sources and sinks, the task of the max flow problem is to determine the maximum flow from all of the sources to all of the sinks \cite{illinois} There are many methods to solve this problem which are discussed in the sections below.
+
+\subsection*{Solutions}
+\addcontentsline{toc}{subsection}{Solutions}
+
+\subsubsection*{Brute Force}
+
+One possible method to solving the max flow problem would be with brute force. That is, trying every possible legal flow value for each edge in the graph, and checking which combination results in the highest total flow from source to sink. Note that for the flow values to be legal, the input flow must equal the output flow for each node in the graph. The brute force solution is guaranteed to give a correct solution, however, for graphs with more than a few nodes, the brute force solution is terribly inefficient. The algorithm would have a complexity on the order of $O(max(F) ^ N)$ where max(F) is the maximum flow of the nodes and N is the number of nodes. This is because the algorithm must perform operations for all possible flow combinations for each node.
+
+\subsubsection*{Ford-Fulkerson}
+
+The Ford-Fulkerson algorithm was first described in 1956 by L. R. Ford, Jr. and D. R. Fulkerson \cite{wiki}. This algorithm involves checking for a valid path of flow, and incrementing the flow by the minimum flow of each edge in the path. This process is repeated until there is no more path capable of supporting more flow. The Ford-Fulkerson algorithm is $O(E*max(F))$ where E is the number of edges and max(F) is the maximum flow \cite{illinois}.
+
+\subsubsection*{Edmonds-Karp}
+
+Similar to the Ford-Fulkerson algorithm, the Edmonds-Karp algorithm also involves checking for a valid path of flow, and incrementing the flow by the minimum flow of each edge in the path. However, the Edmonds-Karp algorithm improves upon the Ford-Fulkerson algorithm by using a breadth-first search to find augmenting paths. This improves the time-complexity of the algorithm. In fact, the Edmonds-Karp algorithm has a time complexity on the order of $O(N*E^2)$ where N is the number of nodes and E is the number of edges in the graph \cite{illinois}.
+
+\subsubsection*{Multiple-Source Multiple-Sink}
+Note that multiple-source multiple-sink (MSMS) graphs can also be analysed with the same algorithms by simply adding a 'super source' which feeds all the sources and 'super sink' into which all the sinks feed. The connections to and from the super source and super sink must be infinite flow. Infinite flow for these edges can be achieved by setting the maximum flow to be the maximum possible integer value. For almost all graphs, this will yield accurate results.
+
+\section*{Pseudocode}
+\addcontentsline{toc}{section}{Pseudocode}
+
+\subsection*{Ford Fulkerson}
+\addcontentsline{toc}{subsection}{Ford-Fulkerson}
+
+The pseudocode algorithm for the Ford-Fulkerson solution is shown in the code listing below:
+
+\begin{lstlisting}[frame=single]
+FordFulkerson(G):
+	residual = G
+	while (parentList = findPath(residual)):
+		# Invariant: parentList contains complete path 
+		#     from source to sink
+		# Invariant: size of parentList is number of 
+		#     columns/rows in g
+		minimum flow = 0
+		for each node in the path:
+			minimum = min(node.flow, minimumFlow)
+		for each node, v, in the path:
+			u = parentList[v]
+			residual[u,v] -= minimumFlow
+			residual[v,u] += minimumFlow
+		maxFlow += minimumflow
+\end{lstlisting}
+ 
+ . . .and the findPath() function is implemented as follows:
+ 
+\begin{lstlisting}[frame=single]
+# Pre-condition: G is a 2-d array containing a node map 
+#     to describe a graph.
+FindPath(G, V, P, node)
+	if node is the sink node:
+    	return true
+    for each link in the node map:
+    	if not V[link] and G[node, link]:
+        	V[link] = true
+            if (FindPath(G, V, P, link):
+            	P[link] = node
+                return true
+     return false
+# Post-condition: True if a path is found, otherwise false.
+#                 P contains parent list of path (if found)
+\end{lstlisting}
+
+\subsection*{Edmonds-Karp}
+\addcontentsline{toc}{subsection}{Edmonds-Karp}
+
+The Edmonds-Karp implementation is very similar to the Ford-Fulkerson implementation, except that the findPath algorithm is a breadth-first algorithm instead of depth-first.
+
+\begin{lstlisting}[frame=single]
+# Pre-condition: G is a 2-d array containingap 
+#     to describe a graph.
+FindPath(G):
+	q.push(G.source)
+    visited[G.source] = true
+    parent[G.source] = -1
+    
+    while not q.empty():
+    	u = q.pop()
+        
+        for each node in G:
+        	if not visited[node] and node.flow > 0:
+            	q.push(node)
+                parent[node] = u
+                visited[node] = true
+    
+    return parent
+# Post-condition: parent contains a parent list describing a path
+\end{lstlisting}
+
+\subsection*{Invaraints}
+\addcontentsline{toc}{subsection}{Invariants}
+The invaraints that will be used are listed in the pseudocode above. These invariants will be implemented as asserts, which will be called to verify the validity of the values being manipulated by the program at runtime.
+
+\section*{Testing Plan}
+\addcontentsline{toc}{section}{Testing Plan}
+In order to analyze and compare the two algorithms, a thorough testing plan will be implemented. Both algorithms will be tested for single-source single-sink as well as multiple-source multiple-sink. In addition, three levels of sparseness will be tested, corresponding to 10 percent, 50 percent and 90 percent of the possible edges existing. Finally, the number of nodes will be plotted against the runtime for analysis.
+
+\section*{Results}
+\addcontentsline{toc}{section}{Results}
+The following charts show the run times versus item count for a range of node counts:
+
+\begin{figure}[ht!]
+\begin{center}
+\includegraphics[width=\textwidth]{chart1}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+\begin{center}
+\includegraphics[width=\textwidth]{chart2}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+\begin{center}
+\includegraphics[width=\textwidth]{chart3}
+\end{center}
+\end{figure}
+
+Note that the Edmonds-Karp algorithm performed consistently better than the Ford-Fulkerson algorithm. This held true across a wide range of node counts and sparseness. This is due to the Edmonds-Karp algorithm utilizing a breadth-first search to determine augmenting paths rather than a depth-first search.
+
+Also, the sparseness of the graphs had a significant impact on the run time of the algorithms for both Ford-Fulkerson and Edmonds-Karp. The difference is roughly one order of magnitide (10 times) between the dense graph (90\%) and the sparse graph (10\%).
+
+The following chart shows data for multiple-source multiple-sink. The number of sources and sinks is set to 20\% of the number of nodes. Clearly, adding multiple sources and sinks drastically increases the run-time of the algorithm (again, by about 1 order of magnitude in this case).
+
+\begin{figure}[ht!]
+\begin{center}
+\includegraphics[width=\textwidth]{chart4}
+\end{center}
+\end{figure}
+
+\begin{thebibliography}{99}
+
+\bibitem{wiki}
+\begin{verbatim}
+ "Maximum Flow Problem." Wikipedia. Wikimedia Foundation, n.d. Web. 
+ 03 May 2016.  
+\end{verbatim}
+
+\bibitem{illinois}
+\begin{verbatim}
+Nedich, A. (2009, October 28). Max-Flow Problem and Augmenting Path
+Alorithm. Retrieved May 3, 2016, from http://www.ifp.illinois.edu/
+~angelia/ge330fall09_maxflowl20.pdf
+\end{verbatim}
+
+\end{thebibliography}
+
+\end{document}
+
+%http://cs.ucsb.edu/~koc/cs32/docx/06-merge.pdf
+
+%-------------------------------------------------------------------------------
+% SNIPPETS
+%-------------------------------------------------------------------------------
+
+%\begin{figure}[!ht]
+%	\centering
+%	\includegraphics[width=0.8\textwidth]{file_name}
+%	\caption{}
+%	\centering
+%	\label{label:file_name}
+%\end{figure}
+
+%\begin{figure}[!ht]
+%	\centering
+%	\includegraphics[width=0.8\textwidth]{graph}
+%	\caption{Blood pressure ranges and associated level of hypertension (American Heart Association, 2013).}
+%	\centering
+%	\label{label:graph}
+%\end{figure}
+
+%\begin{wrapfigure}{r}{0.30\textwidth}
+%	\vspace{-40pt}
+%	\begin{center}
+%		\includegraphics[width=0.29\textwidth]{file_name}
+%	\end{center}
+%	\vspace{-20pt}
+%	\caption{}
+%	\label{label:file_name}
+%\end{wrapfigure}
+
+%\begin{wrapfigure}{r}{0.45\textwidth}
+%	\begin{center}
+%		\includegraphics[width=0.29\textwidth]{manometer}
+%	\end{center}
+%	\caption{Aneroid sphygmomanometer with stethoscope (Medicalexpo, 2012).}
+%	\label{label:manometer}
+%\end{wrapfigure}
+
+%\begin{table}[!ht]\footnotesize
+%	\centering
+%	\begin{tabular}{cccccc}
+%	\toprule
+%	\multicolumn{2}{c} {Pearson's correlation test} & \multicolumn{4}{c} {Independent t-test} \\
+%	\midrule	
+%	\multicolumn{2}{c} {Gender} & \multicolumn{2}{c} {Activity level} & \multicolumn{2}{c} {Gender} \\
+%	\midrule
+%	Males & Females & 1st level & 6th level & Males & Females \\
+%	\midrule
+%	\multicolumn{2}{c} {BMI vs. SP} & \multicolumn{2}{c} {Systolic pressure} & \multicolumn{2}{c} {Systolic Pressure} \\
+%	\multicolumn{2}{c} {BMI vs. DP} & \multicolumn{2}{c} {Diastolic pressure} & \multicolumn{2}{c} {Diastolic pressure} \\
+%	\multicolumn{2}{c} {BMI vs. MAP} & \multicolumn{2}{c} {MAP} & \multicolumn{2}{c} {MAP} \\
+%	\multicolumn{2}{c} {W:H ratio vs. SP} & \multicolumn{2}{c} {BMI} & \multicolumn{2}{c} {BMI} \\
+%	\multicolumn{2}{c} {W:H ratio vs. DP} & \multicolumn{2}{c} {W:H ratio} & \multicolumn{2}{c} {W:H ratio} \\
+%	\multicolumn{2}{c} {W:H ratio vs. MAP} & \multicolumn{2}{c} {\% Body fat} & \multicolumn{2}{c} {\% Body fat} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Height} & \multicolumn{2}{c} {Height} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Weight} & \multicolumn{2}{c} {Weight} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Heart rate} & \multicolumn{2}{c} {Heart rate} \\
+%	\bottomrule
+%	\end{tabular}
+%	\caption{Parameters that were analysed and related statistical test performed for current study. BMI - body mass index; SP - systolic pressure; DP - diastolic pressure; MAP - mean arterial pressure; W:H ratio - waist to hip ratio.}
+%	\label{label:tests}
+%\end{table}
